@@ -10,12 +10,12 @@ def generatePossibilities(digit, num):
         return
 
     if digit == 1 or digit == 4 or digit == 2 or digit == 5: # 1, 2, 4, 5
-        generatePossibilities(digit+1, num) # Not included
+        generatePossibilities(digit+1, num)
         generatePossibilities(digit+3, num)
         num = num*10 + digit
         if num <= 200:
             possibilities.add(num)
-        generatePossibilities(digit, num) # Included
+        generatePossibilities(digit, num)
         generatePossibilities(digit+1, num)
         generatePossibilities(digit+3, num)
     
@@ -81,4 +81,3 @@ def main():
             print(currNum)
 
 main()
-

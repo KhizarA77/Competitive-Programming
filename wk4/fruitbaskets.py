@@ -18,6 +18,9 @@ def makeFruitBaskets(nums, cursum):
     makeFruitBaskets(nums[1:], cursum)
     makeFruitBaskets(nums[1:], cursum + nums[0])
 
+
+
+
 def main():
     global smallSum
     n = int(input())

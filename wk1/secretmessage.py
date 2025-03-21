@@ -1,36 +1,46 @@
 import math
+import sys
 
-# import sys
-# inputs = sys.stdin.read().splitlines() # read all first
-# outputs = []                           # buffer output first
-# ln = 0                                 # assumption:
-# while True:                            # input has >1 lines
-#     N = int(inputs[ln])                # with 1 integer each
-#     if N == 0: break
-#     outputs.append(str(N))            
-#     ln += 1
-# sys.stdout.write('\n'.join(outputs))   
 
+inputs = []
+
+N = int(input())
+
+for i in range(0,N):
+    inputs.append(input())
 
 def secret(N, messages):
     returnArr = []
     for i in range(0, len(messages)):
         message = messages[i]
-        enc = ''
         L = len(message)
         M = int(math.ceil(math.sqrt(L)))
-        astericMessage = message + '*'*M 
-        count = M-1
-         
-        
-    
-print(secret(1, ['iloveyouJack']))
+        astericMessage = message + '*'*M
+        matrix = [[0] * M for a in range(M)]
+        counter = 0
 
-# i = (0,0) -> (3,0)
-# l = (1,0) -> (3,1)
-# o = (2,0) -> (3,2)
-# v = (3,0) -> (3,3)
+        # Create a matrix with the stars
+        for j in range(0, M):
+            for k in range(0, M):
+                matrix[j][k] = astericMessage[counter]
+                counter += 1
+        # Rotate the matrix 90 degrees clockwise
+        encryptedMatrix = [[0] * M for a in range(M)]
 
-# e = (0,1) -> (2,0)
-# y = (1,1) -> (2,1)
-# 
+        for j in range(0, M):
+            for k in range(0, M):
+                encryptedMatrix[k][M-j-1] = matrix[j][k]
+                
+
+        encryptedMessage = ''
+        for j in range(0,M):
+            for k in range(0, M):
+                if encryptedMatrix[j][k] != '*':
+                    encryptedMessage += encryptedMatrix[j][k]
+
+        returnArr.append(encryptedMessage)         
+    return returnArr
+
+result = secret(N, inputs)
+result = str(result).replace(',','\n').replace('[', '').replace(']','').replace(' ', '').replace('\'', '')
+print(result)

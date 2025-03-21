@@ -1,5 +1,3 @@
-
-
 def subseqhard(arr, n):
     prefix_sum_count = {0: 1}
     current_sum = 0
@@ -20,7 +18,7 @@ for i in range(0, n):
     _input = input()
     if _input == '\n':
         continue
-    len = int(_input)
+    len = int(input())
     arr = input().split(' ')
     arr = list(map(int, arr))
 

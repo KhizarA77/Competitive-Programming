@@ -1,51 +1,88 @@
-
-# rowFlag = {}
-# colFlag = {}
-# squareFlag = {}
-
-# for i in range(0, 9):
-#     rowFlag[i] = [False] * 10
-#     colFlag[i] = [False] * 10
-#     squareFlag[i] = [False] * 10
-
-def cross(sudukoArray):
+def cross_hatching_solver(lines):
     
-    rowFlag = {}
-    colFlag = {}
-    squareFlag = {}
-    
-    for i in range(0, 9):
-        rowFlag[i] = [False] * 10
-        colFlag[i] = [False] * 10
-        squareFlag[i] = [False] * 10
+    grid = []
+    for r in range(9):
+        row = []
+        for c in range(9):
+            ch = lines[r][c]
+            if ch == '.':
+                row.append(0)
+            else:
+                val = int(ch)
+                if not (1 <= val <= 9):
+                    return "ERROR" 
+                row.append(val)
+        grid.append(row)
 
-    for i in range(0, 9):
-        for j in range(0, 9):
-            val = sudukoArray[i][j]
-            if (val != 0):
-                rowFlag[i][val] = True
-                colFlag[j][val] = True
-                boxrow = int(i/3)
-                boxcol = int(j/3)
-                boxIndex = boxrow*3 + boxcol
-                squareFlag[boxIndex][val] = True
-    
-    return (squareFlag)
+    row_used = [set() for _ in range(9)]
+    col_used = [set() for _ in range(9)]
+    box_used = [set() for _ in range(9)]
 
-# print(rowFlag)
-# print(colFlag)
-# print(squareFlag)
+    for r in range(9):
+        for c in range(9):
+            val = grid[r][c]
+            if val != 0:
+                box_index = (r // 3) * 3 + (c // 3)
+                if (val in row_used[r] or 
+                    val in col_used[c] or 
+                    val in box_used[box_index]):
+                    return "ERROR"
+                row_used[r].add(val)
+                col_used[c].add(val)
+                box_used[box_index].add(val)
 
-inputArray = [
-    [0,0,9,0,0,0,0,0,0],
-    [0,0,0,0,0,4,0,0,0],
-    [0,0,0,0,0,0,0,4,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,4,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-]
-print(cross(inputArray))
+    while True:
+        changed = False
 
+        for digit in range(1, 10):
+            for box_index in range(9):
+                
+                if digit in box_used[box_index]:
+                    continue
+
+                r_start = (box_index // 3) * 3
+                c_start = (box_index % 3) * 3
+
+                possible_positions = []
+                for rr in range(r_start, r_start + 3):
+                    for cc in range(c_start, c_start + 3):
+                        if grid[rr][cc] == 0:
+                            if (digit not in row_used[rr] and
+                                digit not in col_used[cc]):
+                                possible_positions.append((rr, cc))
+
+                
+                if len(possible_positions) == 0:
+                    return "ERROR"
+                if len(possible_positions) == 1:
+                    (rpos, cpos) = possible_positions[0]
+                    grid[rpos][cpos] = digit
+                    row_used[rpos].add(digit)
+                    col_used[cpos].add(digit)
+                    box_used[box_index].add(digit)
+                    changed = True
+
+        
+        if not changed:
+            break
+
+    result = []
+    for r in range(9):
+        row_str = ""
+        for c in range(9):
+            val = grid[r][c]
+            row_str += str(val) if val != 0 else '.'
+        result.append(row_str)
+
+    return result
+
+
+if __name__ == "__main__":
+    import sys
+    lines = [sys.stdin.readline().rstrip('\n') for _ in range(9)]
+    answer = cross_hatching_solver(lines)
+    if answer == "ERROR":
+        print("ERROR")
+    else:
+        for row in answer:
+            print(row)
